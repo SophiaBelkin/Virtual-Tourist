@@ -7,19 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		671939AC26C0A2AC00D94641 /* PhotoCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671939AB26C0A2AC00D94641 /* PhotoCollectionViewController.swift */; };
+		671939AE26C0A2CB00D94641 /* PhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671939AD26C0A2CB00D94641 /* PhotoCollectionViewCell.swift */; };
+		671939B226C0A38E00D94641 /* Flicker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 671939B026C0A38E00D94641 /* Flicker.xcdatamodeld */; };
+		671939B426C0A3BF00D94641 /* HttpRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671939B326C0A3BF00D94641 /* HttpRequests.swift */; };
+		671939B626C0A41E00D94641 /* FlickerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671939B526C0A41E00D94641 /* FlickerClient.swift */; };
 		F943912826B88A7800E24E9D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F943912726B88A7800E24E9D /* AppDelegate.swift */; };
 		F943912A26B88A7800E24E9D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F943912926B88A7800E24E9D /* SceneDelegate.swift */; };
-		F943912C26B88A7800E24E9D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F943912B26B88A7800E24E9D /* ViewController.swift */; };
+		F943912C26B88A7800E24E9D /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F943912B26B88A7800E24E9D /* MapViewController.swift */; };
 		F943912F26B88A7800E24E9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F943912D26B88A7800E24E9D /* Main.storyboard */; };
 		F943913126B88A7A00E24E9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F943913026B88A7A00E24E9D /* Assets.xcassets */; };
 		F943913426B88A7A00E24E9D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F943913226B88A7A00E24E9D /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		671939AB26C0A2AC00D94641 /* PhotoCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewController.swift; sourceTree = "<group>"; };
+		671939AD26C0A2CB00D94641 /* PhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionViewCell.swift; sourceTree = "<group>"; };
+		671939B126C0A38E00D94641 /* Flicker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Flicker.xcdatamodel; sourceTree = "<group>"; };
+		671939B326C0A3BF00D94641 /* HttpRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpRequests.swift; sourceTree = "<group>"; };
+		671939B526C0A41E00D94641 /* FlickerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerClient.swift; sourceTree = "<group>"; };
 		F943912426B88A7800E24E9D /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F943912726B88A7800E24E9D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F943912926B88A7800E24E9D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		F943912B26B88A7800E24E9D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F943912B26B88A7800E24E9D /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		F943912E26B88A7800E24E9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F943913026B88A7A00E24E9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F943913326B88A7A00E24E9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -37,6 +47,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		671939A926C0A25A00D94641 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				F943912B26B88A7800E24E9D /* MapViewController.swift */,
+				671939AB26C0A2AC00D94641 /* PhotoCollectionViewController.swift */,
+				671939AD26C0A2CB00D94641 /* PhotoCollectionViewCell.swift */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		671939AA26C0A26A00D94641 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				671939B326C0A3BF00D94641 /* HttpRequests.swift */,
+				671939B526C0A41E00D94641 /* FlickerClient.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		671939AF26C0A32F00D94641 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				671939B026C0A38E00D94641 /* Flicker.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		671939B726C0F38800D94641 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F943912D26B88A7800E24E9D /* Main.storyboard */,
+				F943913026B88A7A00E24E9D /* Assets.xcassets */,
+				F943913226B88A7A00E24E9D /* LaunchScreen.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		F943911B26B88A7800E24E9D = {
 			isa = PBXGroup;
 			children = (
@@ -58,11 +105,11 @@
 			children = (
 				F943912726B88A7800E24E9D /* AppDelegate.swift */,
 				F943912926B88A7800E24E9D /* SceneDelegate.swift */,
-				F943912B26B88A7800E24E9D /* ViewController.swift */,
-				F943912D26B88A7800E24E9D /* Main.storyboard */,
-				F943913026B88A7A00E24E9D /* Assets.xcassets */,
-				F943913226B88A7A00E24E9D /* LaunchScreen.storyboard */,
 				F943913526B88A7A00E24E9D /* Info.plist */,
+				671939AF26C0A32F00D94641 /* Model */,
+				671939AA26C0A26A00D94641 /* Networking */,
+				671939A926C0A25A00D94641 /* ViewController */,
+				671939B726C0F38800D94641 /* View */,
 			);
 			path = VirtualTourist;
 			sourceTree = "<group>";
@@ -137,9 +184,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F943912C26B88A7800E24E9D /* ViewController.swift in Sources */,
+				671939B226C0A38E00D94641 /* Flicker.xcdatamodeld in Sources */,
+				F943912C26B88A7800E24E9D /* MapViewController.swift in Sources */,
+				671939AE26C0A2CB00D94641 /* PhotoCollectionViewCell.swift in Sources */,
+				671939B426C0A3BF00D94641 /* HttpRequests.swift in Sources */,
 				F943912826B88A7800E24E9D /* AppDelegate.swift in Sources */,
+				671939B626C0A41E00D94641 /* FlickerClient.swift in Sources */,
 				F943912A26B88A7800E24E9D /* SceneDelegate.swift in Sources */,
+				671939AC26C0A2AC00D94641 /* PhotoCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +393,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		671939B026C0A38E00D94641 /* Flicker.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				671939B126C0A38E00D94641 /* Flicker.xcdatamodel */,
+			);
+			currentVersion = 671939B126C0A38E00D94641 /* Flicker.xcdatamodel */;
+			path = Flicker.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F943911C26B88A7800E24E9D /* Project object */;
 }
