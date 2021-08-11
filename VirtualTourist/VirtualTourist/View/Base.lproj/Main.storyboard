@@ -19,6 +19,7 @@
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="qvE-vf-Lza">
                                 <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                                <gestureRecognizers/>
                             </mapView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -39,10 +40,10 @@
             </objects>
             <point key="canvasLocation" x="1849.2753623188407" y="88.392857142857139"/>
         </scene>
-        <!--Title-->
+        <!-- -->
         <scene sceneID="X9u-CY-6lg">
             <objects>
-                <viewController storyboardIdentifier="photoCollectionViewController" id="7fd-KO-DCN" customClass="PhotoCollectionViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="photoCollectionViewController" id="7fd-KO-DCN" userLabel=" " customClass="PhotoCollectionViewController" customModule="VirtualTourist" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aCY-ad-6IJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

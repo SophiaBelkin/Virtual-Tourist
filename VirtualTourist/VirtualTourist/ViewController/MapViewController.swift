@@ -25,6 +25,7 @@ class MapViewController: UIViewController {
         mapView.delegate = self
         navigationItem.backButtonTitle = "OK"
         setupMapRegion()
+        loadGestureRecognizer()
       
     }
     
@@ -40,28 +41,51 @@ class MapViewController: UIViewController {
         
         mapView.region = region
         
-        addPin()
     }
     
-    private func addPin() {
+    private func loadGestureRecognizer() {
+        let longPressRecognizer =  UILongPressGestureRecognizer(target: self, action: #selector(recognizeLongPress))
+    
+        mapView.addGestureRecognizer(longPressRecognizer)
+    }
+    
+    @objc func recognizeLongPress(_ sender: UILongPressGestureRecognizer)  {
+        if sender.state != UIGestureRecognizer.State.began {
+                  return
+            }
+        let location = sender.location(in: mapView)
+        
+        // Convert location to CLLocationCoordinate2D.
+       let selectedCoordinate: CLLocationCoordinate2D = mapView.convert(location, toCoordinateFrom: mapView)
+        
+        // add pin
         let pin = MKPointAnnotation()
-        pin.coordinate = coordinate2D
+        pin.coordinate = selectedCoordinate
         pin.title = "new pin"
         pin.subtitle = "new pin for testing"
         mapView.addAnnotation(pin)
     }
-    
 }
 
 
 extension MapViewController: MKMapViewDelegate {
     
-    // TODO: Add anotation view
-    
-//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-//
-//        return true
-//    }
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = .red
+        } else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         

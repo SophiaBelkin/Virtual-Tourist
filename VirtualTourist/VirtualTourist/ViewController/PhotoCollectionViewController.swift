@@ -20,6 +20,7 @@ class PhotoCollectionViewController: UIViewController {
         photoCollectionView.delegate = self
         photoCollectionView.dataSource = self
         setupMapRegion()
+       
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 1
@@ -48,6 +49,7 @@ class PhotoCollectionViewController: UIViewController {
         pin.coordinate = coordinate2D
         individualMapView.addAnnotation(pin)
     }
+        
 }
 
 extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
