@@ -97,6 +97,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="loadNewCollection:" destination="7fd-KO-DCN" eventType="touchUpInside" id="dZZ-mk-KpS"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="MaG-AM-l63"/>
@@ -114,7 +117,7 @@
                             <constraint firstItem="6L9-91-GL4" firstAttribute="top" secondItem="eq1-Ql-M3Q" secondAttribute="bottom" id="ywt-qg-abP"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Title" id="1te-vo-gUU"/>
+                    <navigationItem key="navigationItem" title=" " id="1te-vo-gUU"/>
                     <connections>
                         <outlet property="individualMapView" destination="eq1-Ql-M3Q" id="gxG-Ma-xWs"/>
                         <outlet property="photoCollectionView" destination="6L9-91-GL4" id="RNI-Wc-ZBm"/>

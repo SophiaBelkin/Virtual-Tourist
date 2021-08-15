@@ -26,7 +26,7 @@ class MapViewController: UIViewController {
         navigationItem.backButtonTitle = "OK"
         setupMapRegion()
         loadGestureRecognizer()
-      
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,7 +40,6 @@ class MapViewController: UIViewController {
         let region = MKCoordinateRegion(center: coordinate2D, latitudinalMeters: 100, longitudinalMeters: 100)
         
         mapView.region = region
-        
     }
     
     private func loadGestureRecognizer() {
@@ -61,8 +60,7 @@ class MapViewController: UIViewController {
         // add pin
         let pin = MKPointAnnotation()
         pin.coordinate = selectedCoordinate
-        pin.title = "new pin"
-        pin.subtitle = "new pin for testing"
+        pin.title = "\(selectedCoordinate.latitude), \(selectedCoordinate.longitude)"
         mapView.addAnnotation(pin)
     }
 }
@@ -91,8 +89,11 @@ extension MapViewController: MKMapViewDelegate {
         
         let vc = storyboard?.instantiateViewController(identifier: "photoCollectionViewController") as! PhotoCollectionViewController
         
-        navigationController?.pushViewController(vc, animated: true)
-        
+        if let annocation = view.annotation {
+            vc.latitude = annocation.coordinate.latitude
+            vc.longitude = annocation.coordinate.longitude
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 
