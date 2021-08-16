@@ -17,13 +17,13 @@ class MapViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     
-    var coordinate2D = CLLocationCoordinate2DMake(40.8367321, 14.2468856)
+//    var coordinate2D = CLLocationCoordinate2DMake(40.8367321, 14.2468856)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         navigationItem.backButtonTitle = "OK"
-        setupMapRegion()
+//        setupMapRegion()
         loadGestureRecognizer()
 
     }
@@ -36,9 +36,9 @@ class MapViewController: UIViewController {
     private func setupMapRegion() {
         
         // Define the region
-        let region = MKCoordinateRegion(center: coordinate2D, latitudinalMeters: 100, longitudinalMeters: 100)
-        
-        mapView.region = region
+//        let region = MKCoordinateRegion(center: coordinate2D, latitudinalMeters: 100, longitudinalMeters: 100)
+//
+//        mapView.region = region
     }
     
     private func loadGestureRecognizer() {
