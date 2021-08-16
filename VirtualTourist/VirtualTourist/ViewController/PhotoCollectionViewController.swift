@@ -12,6 +12,8 @@ class PhotoCollectionViewController: UIViewController {
 
     @IBOutlet weak var photoCollectionView: UICollectionView!
     @IBOutlet weak var individualMapView: MKMapView!
+    @IBOutlet weak var noImagesLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var latitude: CLLocationDegrees = 0.0
     var longitude: CLLocationDegrees = 0.0
@@ -22,30 +24,37 @@ class PhotoCollectionViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = headerTitle
         photoCollectionView.delegate = self
         photoCollectionView.dataSource = self
         coordinate2D = CLLocationCoordinate2DMake(latitude, longitude)
         setupMapRegion()
-        title = headerTitle
+        searchPhotos(pageCount: 0)
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 1
         layout.itemSize = CGSize(width: view.frame.width/3 - 4, height: view.frame.width/3 - 4)
         photoCollectionView.collectionViewLayout = layout
-        
-        page = 0
-        searchPhotos(pageCount: 0)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = false
-        
+    }
+    
+    private func prepareUI() {
+        activityIndicator.isHidden = true
+        if photos.count == 0 {
+            photoCollectionView.isHidden = true
+            noImagesLabel.isHidden = false
+        } else {
+            photoCollectionView.isHidden = false
+            noImagesLabel.isHidden = true
+        }
     }
     
     private func setupMapRegion() {
-        
         // Define the region
         let region = MKCoordinateRegion(center: coordinate2D, latitudinalMeters: 100, longitudinalMeters: 100)
         
@@ -65,6 +74,7 @@ class PhotoCollectionViewController: UIViewController {
             self.photos = data
             
             DispatchQueue.main.async {
+                self.prepareUI()
                 self.photoCollectionView.reloadData()
             }
         })
@@ -72,6 +82,7 @@ class PhotoCollectionViewController: UIViewController {
         
     @IBAction func loadNewCollection(_ sender: Any) {
         page += 1
+        activityIndicator.isHidden = false
         searchPhotos(pageCount: page)
     }
 }

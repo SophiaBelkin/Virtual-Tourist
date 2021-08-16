@@ -89,6 +89,13 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Images" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oEe-2d-ieH">
+                                <rect key="frame" x="0.0" y="179" width="414" height="538"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GYU-9w-HOj">
                                 <rect key="frame" x="0.0" y="812" width="414" height="50"/>
                                 <color key="backgroundColor" red="0.9267182969555412" green="0.92088987999355676" blue="0.93254671391752575" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -101,6 +108,9 @@
                                     <action selector="loadNewCollection:" destination="7fd-KO-DCN" eventType="touchUpInside" id="dZZ-mk-KpS"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Lnq-L4-d1M">
+                                <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="MaG-AM-l63"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -108,18 +118,22 @@
                             <constraint firstItem="eq1-Ql-M3Q" firstAttribute="leading" secondItem="MaG-AM-l63" secondAttribute="leading" id="01B-fY-bM6"/>
                             <constraint firstItem="MaG-AM-l63" firstAttribute="trailing" secondItem="GYU-9w-HOj" secondAttribute="trailing" id="05y-4h-zK4"/>
                             <constraint firstItem="GYU-9w-HOj" firstAttribute="leading" secondItem="MaG-AM-l63" secondAttribute="leading" id="6IO-ML-0Ck"/>
+                            <constraint firstItem="Lnq-L4-d1M" firstAttribute="centerY" secondItem="aCY-ad-6IJ" secondAttribute="centerY" id="DfU-al-60S"/>
                             <constraint firstItem="MaG-AM-l63" firstAttribute="trailing" secondItem="eq1-Ql-M3Q" secondAttribute="trailing" id="Gh4-Hf-Mt1"/>
                             <constraint firstItem="eq1-Ql-M3Q" firstAttribute="top" secondItem="MaG-AM-l63" secondAttribute="top" id="JX4-uI-BrS"/>
                             <constraint firstItem="6L9-91-GL4" firstAttribute="leading" secondItem="MaG-AM-l63" secondAttribute="leading" id="V1V-9r-fRK"/>
                             <constraint firstItem="MaG-AM-l63" firstAttribute="trailing" secondItem="6L9-91-GL4" secondAttribute="trailing" id="a3J-9x-zP6"/>
                             <constraint firstItem="GYU-9w-HOj" firstAttribute="bottom" secondItem="MaG-AM-l63" secondAttribute="bottom" id="mkX-l8-i14"/>
                             <constraint firstItem="GYU-9w-HOj" firstAttribute="top" secondItem="6L9-91-GL4" secondAttribute="bottom" id="sdK-pK-AxS"/>
+                            <constraint firstItem="Lnq-L4-d1M" firstAttribute="centerX" secondItem="aCY-ad-6IJ" secondAttribute="centerX" id="tCW-XE-54c"/>
                             <constraint firstItem="6L9-91-GL4" firstAttribute="top" secondItem="eq1-Ql-M3Q" secondAttribute="bottom" id="ywt-qg-abP"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title=" " id="1te-vo-gUU"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="Lnq-L4-d1M" id="DPc-Xb-Kfe"/>
                         <outlet property="individualMapView" destination="eq1-Ql-M3Q" id="gxG-Ma-xWs"/>
+                        <outlet property="noImagesLabel" destination="oEe-2d-ieH" id="TLK-i7-mFU"/>
                         <outlet property="photoCollectionView" destination="6L9-91-GL4" id="RNI-Wc-ZBm"/>
                     </connections>
                 </viewController>
