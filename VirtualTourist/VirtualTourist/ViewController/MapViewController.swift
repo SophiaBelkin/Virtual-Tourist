@@ -19,7 +19,6 @@ class MapViewController: UIViewController {
     
     var coordinate2D = CLLocationCoordinate2DMake(40.8367321, 14.2468856)
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
@@ -60,8 +59,37 @@ class MapViewController: UIViewController {
         // add pin
         let pin = MKPointAnnotation()
         pin.coordinate = selectedCoordinate
-        pin.title = "\(selectedCoordinate.latitude), \(selectedCoordinate.longitude)"
+        placeMark(coordinate: selectedCoordinate) { placemark in
+            var locationStr = ""
+            if let placemark = placemark {
+               
+                if let city = placemark.locality {
+                    locationStr += (city + ", ")
+                }
+                if let state = placemark.administrativeArea {
+                    locationStr += (state + ", ")
+                }
+                if let country = placemark.country {
+                    locationStr += country
+                }
+            } else {
+                print("Not found")
+            }
+            pin.title = locationStr
+        }
         mapView.addAnnotation(pin)
+    }
+    
+    func placeMark(coordinate: CLLocationCoordinate2D, completionHandler: @escaping(CLPlacemark?) -> Void) {
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if let placemarks = placemarks {
+                completionHandler(placemarks.first)
+            } else {
+                completionHandler(nil)
+            }
+        }
     }
 }
 
@@ -78,6 +106,7 @@ extension MapViewController: MKMapViewDelegate {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView!.pinTintColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .infoLight)
         } else {
             pinView!.annotation = annotation
         }
@@ -85,13 +114,15 @@ extension MapViewController: MKMapViewDelegate {
         return pinView
     }
     
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let vc = storyboard?.instantiateViewController(identifier: "photoCollectionViewController") as! PhotoCollectionViewController
         
         if let annocation = view.annotation {
             vc.latitude = annocation.coordinate.latitude
             vc.longitude = annocation.coordinate.longitude
+            if let title  = annocation.title {
+                vc.headerTitle = title ?? ""
+            }
             navigationController?.pushViewController(vc, animated: true)
         }
     }

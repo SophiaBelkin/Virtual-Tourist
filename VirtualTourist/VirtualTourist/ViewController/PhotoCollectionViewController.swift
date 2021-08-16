@@ -15,7 +15,7 @@ class PhotoCollectionViewController: UIViewController {
     
     var latitude: CLLocationDegrees = 0.0
     var longitude: CLLocationDegrees = 0.0
-    
+    var headerTitle: String = ""
     var coordinate2D: CLLocationCoordinate2D!
     var photos: [PhotoInfo] = []
     var page = 0
@@ -26,7 +26,7 @@ class PhotoCollectionViewController: UIViewController {
         photoCollectionView.dataSource = self
         coordinate2D = CLLocationCoordinate2DMake(latitude, longitude)
         setupMapRegion()
-       
+        title = headerTitle
         
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 1
@@ -97,5 +97,10 @@ extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionV
         }
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        photos.remove(at: indexPath.row)
+        photoCollectionView.reloadData()
     }
 }
