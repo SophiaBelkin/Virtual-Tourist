@@ -19,16 +19,32 @@ class MapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
         
     // TODO: Figure out the
-    var annotations: [MKAnnotation] = []
+//    var pins: [Pin] = []
     var dataController: DataController!
-    
+    var testing: String!
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         navigationItem.backButtonTitle = "OK"
         loadSavedMapRegion()
         loadGestureRecognizer()
-
+        print(testing)
+        
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        
+        do {
+            let pins = try dataController.viewContext.fetch(fetchRequest)
+            for pin in pins {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
+                annotation.title = pin.title
+                self.mapView.addAnnotation(annotation)
+            }
+        
+        } catch {
+            print("Error fetching Pins: \(error)")
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,6 +98,15 @@ class MapViewController: UIViewController {
             pin.title = locationStr
         }
         mapView.addAnnotation(pin)
+        savePin(pin)
+    }
+    
+    func savePin(_ pin: MKPointAnnotation) {
+        let location = Pin(context: dataController.viewContext)
+        location.latitude = pin.coordinate.latitude
+        location.longitude = pin.coordinate.longitude
+        location.title = pin.title
+        try? dataController.viewContext.save()
     }
     
     func placeMark(coordinate: CLLocationCoordinate2D, completionHandler: @escaping(CLPlacemark?) -> Void) {

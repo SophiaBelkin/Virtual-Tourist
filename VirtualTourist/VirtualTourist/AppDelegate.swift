@@ -11,17 +11,15 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    let dataController = DataController(modelName: "VirtualTourist")
-   
+    let dataController = DataController(modelName: "Tourist")
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let navigationController = window?.rootViewController as! UINavigationController
+        let mapViewController = navigationController.topViewController as! MapViewController
+        mapViewController.dataController = (UIApplication.shared.delegate as? AppDelegate)?.dataController
+        mapViewController.testing = "sophia123"
         dataController.load()
-        
-        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let mapViewController = mainStoryboard.instantiateViewController(withIdentifier: "MapViewController") as! MapViewController
-        mapViewController.dataController = dataController
-        
         return true
     }
 
