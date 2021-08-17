@@ -17,9 +17,7 @@ import CoreData
 class MapViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
-    
-//    var coordinate2D = CLLocationCoordinate2DMake(40.8367321, 14.2468856)
-    
+        
     // TODO: Figure out the
     var annotations: [MKAnnotation] = []
     var dataController: DataController!
@@ -28,7 +26,7 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
         mapView.delegate = self
         navigationItem.backButtonTitle = "OK"
-//        setupMapRegion()
+        loadSavedMapRegion()
         loadGestureRecognizer()
 
     }
@@ -38,12 +36,13 @@ class MapViewController: UIViewController {
         navigationController?.isNavigationBarHidden = true
     }
 
-    private func setupMapRegion() {
-        
-        // Define the region
-//        let region = MKCoordinateRegion(center: coordinate2D, latitudinalMeters: 100, longitudinalMeters: 100)
-//
-//        mapView.region = region
+    private func loadSavedMapRegion() {
+        if  let mapRegion = UserDefaults.standard.dictionary(forKey: "mapRegion") {
+            let center = CLLocationCoordinate2D(latitude: mapRegion["latitude"]! as! CLLocationDegrees, longitude: mapRegion["longitude"]! as! CLLocationDegrees)
+            let span = MKCoordinateSpan(latitudeDelta: mapRegion["latitudeDelta"]! as! CLLocationDegrees, longitudeDelta: mapRegion["longitudeDelta"]! as! CLLocationDegrees)
+            
+            mapView.region = MKCoordinateRegion(center: center, span: span)
+        }
     }
     
     private func loadGestureRecognizer() {
@@ -100,6 +99,17 @@ class MapViewController: UIViewController {
 
 
 extension MapViewController: MKMapViewDelegate {
+    
+    func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
+        let mapRegion: [String: CLLocationDegrees] = [
+            "latitude": mapView.region.center.latitude,
+            "longitude": mapView.region.center.longitude,
+            "latitudeDelta": mapView.region.span.latitudeDelta,
+            "longitudeDelta": mapView.region.span.longitudeDelta
+        ]
+        
+        UserDefaults.standard.setValue(mapRegion, forKey: "mapRegion")
+    }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
