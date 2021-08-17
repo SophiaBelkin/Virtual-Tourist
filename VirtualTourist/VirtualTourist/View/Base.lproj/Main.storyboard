@@ -133,6 +133,7 @@
                     <connections>
                         <outlet property="activityIndicator" destination="Lnq-L4-d1M" id="DPc-Xb-Kfe"/>
                         <outlet property="individualMapView" destination="eq1-Ql-M3Q" id="gxG-Ma-xWs"/>
+                        <outlet property="newCollectionBtn" destination="GYU-9w-HOj" id="XS5-yC-z2C"/>
                         <outlet property="noImagesLabel" destination="oEe-2d-ieH" id="TLK-i7-mFU"/>
                         <outlet property="photoCollectionView" destination="6L9-91-GL4" id="RNI-Wc-ZBm"/>
                     </connections>

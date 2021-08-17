@@ -14,6 +14,7 @@ class PhotoCollectionViewController: UIViewController {
     @IBOutlet weak var individualMapView: MKMapView!
     @IBOutlet weak var noImagesLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var newCollectionBtn: UIButton!
     
     var latitude: CLLocationDegrees = 0.0
     var longitude: CLLocationDegrees = 0.0
@@ -28,14 +29,15 @@ class PhotoCollectionViewController: UIViewController {
         photoCollectionView.delegate = self
         photoCollectionView.dataSource = self
         coordinate2D = CLLocationCoordinate2DMake(latitude, longitude)
+        
+        // set map region based on user selection
         setupMapRegion()
+        
+        // Load photos from flicker api or core data
         searchPhotos(pageCount: 0)
         
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 1
-        layout.itemSize = CGSize(width: view.frame.width/3 - 4, height: view.frame.width/3 - 4)
-        photoCollectionView.collectionViewLayout = layout
+        // show collection view flow layout
+        showCollectionViewFlowLayout()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,6 +54,15 @@ class PhotoCollectionViewController: UIViewController {
             photoCollectionView.isHidden = false
             noImagesLabel.isHidden = true
         }
+        showLoadingUI(isLoading: false)
+    }
+    
+    private func showCollectionViewFlowLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 1
+        layout.minimumInteritemSpacing = 1
+        layout.itemSize = CGSize(width: view.frame.width/3 - 4, height: view.frame.width/3 - 4)
+        photoCollectionView.collectionViewLayout = layout
     }
     
     private func setupMapRegion() {
@@ -63,11 +74,13 @@ class PhotoCollectionViewController: UIViewController {
         addPin()
     }
     
+    // Drop pin on the map view
     private func addPin() {
         let pin = MKPointAnnotation()
         pin.coordinate = coordinate2D
         individualMapView.addAnnotation(pin)
     }
+    
     
     private func searchPhotos(pageCount: Int) {
         FlickerClient.getPhotoList(lat: String(latitude), lon: String(longitude), page: pageCount, completion: {data,error in
@@ -82,8 +95,21 @@ class PhotoCollectionViewController: UIViewController {
         
     @IBAction func loadNewCollection(_ sender: Any) {
         page += 1
-        activityIndicator.isHidden = false
+        showLoadingUI(isLoading: true)
         searchPhotos(pageCount: page)
+    }
+    
+    private func showLoadingUI(isLoading: Bool) {
+        newCollectionBtn.isEnabled = !isLoading
+        activityIndicator.isHidden = !isLoading
+        
+        if isLoading {
+            newCollectionBtn.alpha = 0.5
+            activityIndicator.startAnimating()
+        } else {
+            newCollectionBtn.alpha = 1
+            activityIndicator.stopAnimating()
+        }
     }
 }
 
