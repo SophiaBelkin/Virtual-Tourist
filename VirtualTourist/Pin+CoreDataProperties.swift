@@ -2,7 +2,7 @@
 //  Pin+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Sophia Lu on 8/16/21.
+//  Created by Sophia Lu on 8/17/21.
 //
 //
 
@@ -19,6 +19,24 @@ extension Pin {
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
     @NSManaged public var title: String?
+    @NSManaged public var pin: NSSet?
+
+}
+
+// MARK: Generated accessors for pin
+extension Pin {
+
+    @objc(addPinObject:)
+    @NSManaged public func addToPin(_ value: Photo)
+
+    @objc(removePinObject:)
+    @NSManaged public func removeFromPin(_ value: Photo)
+
+    @objc(addPin:)
+    @NSManaged public func addToPin(_ values: NSSet)
+
+    @objc(removePin:)
+    @NSManaged public func removeFromPin(_ values: NSSet)
 
 }
 
