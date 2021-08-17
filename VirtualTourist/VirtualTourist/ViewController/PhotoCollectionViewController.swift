@@ -87,6 +87,10 @@ class PhotoCollectionViewController: UIViewController {
             self.photos = data
             
             DispatchQueue.main.async {
+                if error != nil {
+                    self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
+                }
+                
                 self.prepareUI()
                 self.photoCollectionView.reloadData()
             }
@@ -111,6 +115,7 @@ class PhotoCollectionViewController: UIViewController {
             activityIndicator.stopAnimating()
         }
     }
+        
 }
 
 extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -126,6 +131,9 @@ extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionV
         
         FlickerClient.downloadImage(photo: photos[indexPath.row]) {data, error in
             guard let data = data else {
+                if error != nil {
+                    self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
+                }
                 return
             }
             let image = UIImage(data: data)
