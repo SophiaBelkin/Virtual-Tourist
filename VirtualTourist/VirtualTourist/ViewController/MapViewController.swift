@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 // TODO: Add anotation view
 // add long press to drop pin
@@ -18,6 +19,10 @@ class MapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     
 //    var coordinate2D = CLLocationCoordinate2DMake(40.8367321, 14.2468856)
+    
+    // TODO: Figure out the
+    var annotations: [MKAnnotation] = []
+    var dataController: DataController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
