@@ -18,29 +18,29 @@ class MapViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
         
-    // TODO: Figure out the
-//    var pins: [Pin] = []
     var dataController: DataController!
-    var testing: String!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
         navigationItem.backButtonTitle = "OK"
         loadSavedMapRegion()
         loadGestureRecognizer()
-        print(testing)
+
         
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         
         do {
             let pins = try dataController.viewContext.fetch(fetchRequest)
+            mapView.removeAnnotations(mapView.annotations)
+            var annotations = [MKPointAnnotation]()
             for pin in pins {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
                 annotation.title = pin.title
-                self.mapView.addAnnotation(annotation)
+                annotations.append(annotation)
             }
-        
+            self.mapView.addAnnotations(annotations)
         } catch {
             print("Error fetching Pins: \(error)")
         }
@@ -96,9 +96,9 @@ class MapViewController: UIViewController {
                 print("Not found")
             }
             pin.title = locationStr
+            self.mapView.addAnnotation(pin)
+            self.savePin(pin)
         }
-        mapView.addAnnotation(pin)
-        savePin(pin)
     }
     
     func savePin(_ pin: MKPointAnnotation) {
@@ -155,6 +155,9 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        mapView.deselectAnnotation(view.annotation, animated: false)
+        
         let vc = storyboard?.instantiateViewController(identifier: "photoCollectionViewController") as! PhotoCollectionViewController
         
         if let annocation = view.annotation {
