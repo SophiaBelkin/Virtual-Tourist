@@ -159,10 +159,12 @@ extension MapViewController: MKMapViewDelegate {
         mapView.deselectAnnotation(view.annotation, animated: false)
         
         let vc = storyboard?.instantiateViewController(identifier: "photoCollectionViewController") as! PhotoCollectionViewController
+        vc.dataController = dataController
         
         if let annocation = view.annotation {
             vc.latitude = annocation.coordinate.latitude
             vc.longitude = annocation.coordinate.longitude
+            
             if let title  = annocation.title {
                 vc.headerTitle = title ?? ""
             }

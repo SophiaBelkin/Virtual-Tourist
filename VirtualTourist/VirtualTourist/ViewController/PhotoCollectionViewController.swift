@@ -7,6 +7,7 @@
 
 import UIKit
 import MapKit
+import CoreData
 
 class PhotoCollectionViewController: UIViewController {
 
@@ -22,6 +23,8 @@ class PhotoCollectionViewController: UIViewController {
     var coordinate2D: CLLocationCoordinate2D!
     var photos: [PhotoInfo] = []
     var page = 0
+    var photosFromStorage: [Photo]!
+    var dataController: DataController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,8 +36,13 @@ class PhotoCollectionViewController: UIViewController {
         // set map region based on user selection
         setupMapRegion()
         
-        // Load photos from flicker api or core data
-        searchPhotos(pageCount: 0)
+        // Load photos from db
+        loadPhotosFromStorage()
+        
+        if photosFromStorage.isEmpty {
+            // Load photos from flicker api or core data
+            fetchPhotos(pageCount: 0)
+        }
         
         // show collection view flow layout
         showCollectionViewFlowLayout()
@@ -56,6 +64,7 @@ class PhotoCollectionViewController: UIViewController {
         }
         showLoadingUI(isLoading: false)
     }
+    
     
     private func showCollectionViewFlowLayout() {
         let layout = UICollectionViewFlowLayout()
@@ -81,8 +90,15 @@ class PhotoCollectionViewController: UIViewController {
         individualMapView.addAnnotation(pin)
     }
     
+    private func loadPhotosFromStorage() {
+        let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", pin)
+        if let result = try? dataController.viewContext.fetch(fetchRequest) {
+            photosFromStorage = result
+        }
+    }
     
-    private func searchPhotos(pageCount: Int) {
+    private func fetchPhotos(pageCount: Int) {
         FlickerClient.getPhotoList(lat: String(latitude), lon: String(longitude), page: pageCount, completion: {data,error in
             self.photos = data
             
@@ -100,7 +116,7 @@ class PhotoCollectionViewController: UIViewController {
     @IBAction func loadNewCollection(_ sender: Any) {
         page += 1
         showLoadingUI(isLoading: true)
-        searchPhotos(pageCount: page)
+        fetchPhotos(pageCount: page)
     }
     
     private func showLoadingUI(isLoading: Bool) {
