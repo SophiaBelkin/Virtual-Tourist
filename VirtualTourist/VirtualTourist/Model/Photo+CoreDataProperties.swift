@@ -2,7 +2,7 @@
 //  Photo+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Sophia Lu on 8/17/21.
+//  Created by Sophia Lu on 8/18/21.
 //
 //
 
@@ -18,6 +18,7 @@ extension Photo {
 
     @NSManaged public var imageUri: URL?
     @NSManaged public var imageData: Data?
+    @NSManaged public var creationDate: Date?
     @NSManaged public var photo: Pin?
 
 }

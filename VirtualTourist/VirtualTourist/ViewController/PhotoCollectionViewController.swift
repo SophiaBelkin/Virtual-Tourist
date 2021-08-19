@@ -17,21 +17,21 @@ class PhotoCollectionViewController: UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var newCollectionBtn: UIButton!
     
-    var latitude: CLLocationDegrees = 0.0
-    var longitude: CLLocationDegrees = 0.0
     var headerTitle: String = ""
     var coordinate2D: CLLocationCoordinate2D!
     var photos: [PhotoInfo] = []
     var page = 0
-    var photosFromStorage: [Photo]!
     var dataController: DataController!
+    var pin: Pin!
+    var fetchedResultsController: NSFetchedResultsController<Photo>!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = headerTitle
         photoCollectionView.delegate = self
         photoCollectionView.dataSource = self
-        coordinate2D = CLLocationCoordinate2DMake(latitude, longitude)
+        coordinate2D = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
         
         // set map region based on user selection
         setupMapRegion()
@@ -39,7 +39,7 @@ class PhotoCollectionViewController: UIViewController {
         // Load photos from db
         loadPhotosFromStorage()
         
-        if photosFromStorage.isEmpty {
+        if photos.isEmpty {
             // Load photos from flicker api or core data
             fetchPhotos(pageCount: 0)
         }
@@ -51,6 +51,11 @@ class PhotoCollectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        fetchedResultsController = nil
     }
     
     private func prepareUI() {
@@ -93,13 +98,24 @@ class PhotoCollectionViewController: UIViewController {
     private func loadPhotosFromStorage() {
         let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "pin == %@", pin)
-        if let result = try? dataController.viewContext.fetch(fetchRequest) {
-            photosFromStorage = result
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                              managedObjectContext: dataController.viewContext,
+                                                              sectionNameKeyPath: nil, cacheName: nil)
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
     }
     
     private func fetchPhotos(pageCount: Int) {
-        FlickerClient.getPhotoList(lat: String(latitude), lon: String(longitude), page: pageCount, completion: {data,error in
+        FlickerClient.getPhotoList(lat: String(pin.latitude), lon: String(pin.longitude), page: pageCount, completion: {data,error in
             self.photos = data
             
             DispatchQueue.main.async {
@@ -155,6 +171,12 @@ extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionV
             let image = UIImage(data: data)
             cell.cellImageView.image = image
             cell.setNeedsLayout()
+            
+            do {
+                try self.dataController.viewContext.save()
+            } catch {
+                print("Unable to remove the photo")
+            }
         }
         
         return cell
@@ -163,5 +185,13 @@ extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         photos.remove(at: indexPath.row)
         photoCollectionView.reloadData()
+    }
+}
+
+
+extension PhotoCollectionViewController: NSFetchedResultsControllerDelegate {
+   
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
     }
 }

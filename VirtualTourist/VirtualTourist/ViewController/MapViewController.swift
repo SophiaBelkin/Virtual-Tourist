@@ -19,6 +19,7 @@ class MapViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
         
     var dataController: DataController!
+    var pinDict: [String: Pin] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,8 +28,18 @@ class MapViewController: UIViewController {
         loadSavedMapRegion()
         loadGestureRecognizer()
 
-        
+        setupFetchResultController()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    private func setupFetchResultController() {
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDesriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDesriptor]
         
         do {
             let pins = try dataController.viewContext.fetch(fetchRequest)
@@ -39,17 +50,12 @@ class MapViewController: UIViewController {
                 annotation.coordinate = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
                 annotation.title = pin.title
                 annotations.append(annotation)
+                pinDict["\(pin.latitude),\(pin.longitude)"] = pin
             }
             self.mapView.addAnnotations(annotations)
         } catch {
             print("Error fetching Pins: \(error)")
         }
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.isNavigationBarHidden = true
     }
 
     private func loadSavedMapRegion() {
@@ -106,7 +112,9 @@ class MapViewController: UIViewController {
         location.latitude = pin.coordinate.latitude
         location.longitude = pin.coordinate.longitude
         location.title = pin.title
+        location.creationDate = Date()
         try? dataController.viewContext.save()
+        pinDict["\(pin.coordinate.latitude),\(pin.coordinate.longitude)"] = location
     }
     
     func placeMark(coordinate: CLLocationCoordinate2D, completionHandler: @escaping(CLPlacemark?) -> Void) {
@@ -162,14 +170,10 @@ extension MapViewController: MKMapViewDelegate {
         vc.dataController = dataController
         
         if let annocation = view.annotation {
-            vc.latitude = annocation.coordinate.latitude
-            vc.longitude = annocation.coordinate.longitude
-            
-            if let title  = annocation.title {
-                vc.headerTitle = title ?? ""
-            }
+            // filter pin
+            vc.pin = pinDict["\(annocation.coordinate.latitude),\(annocation.coordinate.longitude)"]
+            vc.title = annocation.title ?? ""
             navigationController?.pushViewController(vc, animated: true)
         }
     }
 }
-

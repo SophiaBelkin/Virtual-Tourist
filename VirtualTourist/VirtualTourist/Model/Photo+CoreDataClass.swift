@@ -2,7 +2,7 @@
 //  Photo+CoreDataClass.swift
 //  VirtualTourist
 //
-//  Created by Sophia Lu on 8/17/21.
+//  Created by Sophia Lu on 8/18/21.
 //
 //
 
