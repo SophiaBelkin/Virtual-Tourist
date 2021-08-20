@@ -20,7 +20,7 @@ class PhotoCollectionViewController: UIViewController {
     var headerTitle: String = ""
     var coordinate2D: CLLocationCoordinate2D!
     var photos: [PhotoInfo] = []
-    var page = 0
+    var page = 1
     var dataController: DataController!
     var pin: Pin!
     var fetchedResultsController: NSFetchedResultsController<Photo>!
@@ -39,9 +39,9 @@ class PhotoCollectionViewController: UIViewController {
         // Load photos from db
         loadPhotosFromStorage()
         
-        if photos.isEmpty {
-            // Load photos from flicker api or core data
-            fetchPhotos(pageCount: 0)
+        // // Load photos from flicker
+        if fetchedResultsController.fetchedObjects?.count == 0 {
+            fetchPhotos(pageCount: page)
         }
         
         // show collection view flow layout
@@ -51,6 +51,8 @@ class PhotoCollectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = false
+        // Load photos from db
+        loadPhotosFromStorage()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -58,9 +60,9 @@ class PhotoCollectionViewController: UIViewController {
         fetchedResultsController = nil
     }
     
-    private func prepareUI() {
+    private func prepareUI(isEmpty: Bool) {
         activityIndicator.isHidden = true
-        if photos.count == 0 {
+        if isEmpty {
             photoCollectionView.isHidden = true
             noImagesLabel.isHidden = false
         } else {
@@ -115,23 +117,63 @@ class PhotoCollectionViewController: UIViewController {
     }
     
     private func fetchPhotos(pageCount: Int) {
-        FlickerClient.getPhotoList(lat: String(pin.latitude), lon: String(pin.longitude), page: pageCount, completion: {data,error in
-            self.photos = data
-            
-            DispatchQueue.main.async {
-                if error != nil {
-                    self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
+        FlickerClient.getPhotoList(lat: String(pin.latitude), lon: String(pin.longitude), page: pageCount, completion: {photos,error in
+            guard !photos.isEmpty else {
+                DispatchQueue.main.async {
+                    self.prepareUI(isEmpty: true)
                 }
-                
-                self.prepareUI()
-                self.photoCollectionView.reloadData()
+                return
             }
+            
+            for i in 0..<photos.count {
+                FlickerClient.downloadImage(photo: photos[i]) {photo, error in
+                    guard let photo = photo else {
+                        if error != nil {
+                            self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
+                        }
+                        return
+                    }
+                    
+                    let savePhoto = Photo(context: self.dataController.viewContext)
+                    savePhoto.imageData = photo
+                    savePhoto.pin = self.pin
+                    savePhoto.creationDate = Date()
+                    
+                    do {
+                        try self.dataController.viewContext.save()
+                    } catch {
+                        print("Unable to save the photo")
+                    }
+                    
+                    if i == photos.count - 1 {
+                        DispatchQueue.main.async {
+                            if error != nil {
+                                self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
+                            }
+                            self.prepareUI(isEmpty: false)
+                        }
+                    }
+                }
+            }
+
+            
+
+            
         })
     }
         
     @IBAction func loadNewCollection(_ sender: Any) {
         page += 1
         showLoadingUI(isLoading: true)
+        guard let objects = fetchedResultsController.fetchedObjects else { return }
+        for photo in objects {
+            dataController.viewContext.delete(photo)
+           do {
+               try dataController.viewContext.save()
+           } catch {
+                print("Unable to delete images")
+            }
+        }
         fetchPhotos(pageCount: page)
     }
     
@@ -151,47 +193,63 @@ class PhotoCollectionViewController: UIViewController {
 }
 
 extension PhotoCollectionViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return fetchedResultsController.sections!.count
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        guard let sections = fetchedResultsController.sections else {
+            fatalError("No sections in fetchedResultsController")
+        }
+        let sectionInfo = sections[section]
+        return sectionInfo.numberOfObjects
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell( withReuseIdentifier: "photoCollectionCell", for: indexPath) as! PhotoCollectionViewCell
+            cell.cellImageView.image = UIImage(named: "ImagePlaceholder")
+
         
-        cell.cellImageView.image = UIImage(named: "ImagePlaceholder")
-        
-        FlickerClient.downloadImage(photo: photos[indexPath.row]) {data, error in
-            guard let data = data else {
-                if error != nil {
-                    self.showFailedMessage(title: "Error Loading Photos", message: error?.localizedDescription ?? "Something went wrong")
-                }
-                return
-            }
-            let image = UIImage(data: data)
-            cell.cellImageView.image = image
-            cell.setNeedsLayout()
-            
-            do {
-                try self.dataController.viewContext.save()
-            } catch {
-                print("Unable to remove the photo")
-            }
+        // Setup the cell
+        guard let object = self.fetchedResultsController?.object(at:indexPath) else {
+            fatalError("Attempt to configure cell without a managed object")
         }
+    
+        let image = UIImage(data: object.imageData!)!
+        cell.cellImageView.image = image
         
         return cell
     }
     
+
+    // Remove photo from selecting
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        photos.remove(at: indexPath.row)
-        photoCollectionView.reloadData()
+        let notebookToDelete = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(notebookToDelete)
+        try? dataController.viewContext.save()
     }
+    
 }
 
 
 extension PhotoCollectionViewController: NSFetchedResultsControllerDelegate {
    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
+            switch type {
+            case .insert:
+                self.photoCollectionView.insertItems(at: [newIndexPath!])
+            case .delete:
+                self.photoCollectionView.deleteItems(at: [indexPath!])
+            case .update:
+                self.photoCollectionView.reloadItems(at: [newIndexPath!])
+            default:
+                break
+
+        }
     }
+    
+    
+    
 }

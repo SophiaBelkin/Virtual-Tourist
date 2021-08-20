@@ -2,7 +2,7 @@
 //  Pin+CoreDataClass.swift
 //  VirtualTourist
 //
-//  Created by Sophia Lu on 8/18/21.
+//  Created by Sophia Lu on 8/19/21.
 //
 //
 

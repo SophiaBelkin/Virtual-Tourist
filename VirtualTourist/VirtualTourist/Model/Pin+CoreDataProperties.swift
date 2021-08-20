@@ -2,7 +2,7 @@
 //  Pin+CoreDataProperties.swift
 //  VirtualTourist
 //
-//  Created by Sophia Lu on 8/18/21.
+//  Created by Sophia Lu on 8/19/21.
 //
 //
 
@@ -16,28 +16,28 @@ extension Pin {
         return NSFetchRequest<Pin>(entityName: "Pin")
     }
 
+    @NSManaged public var creationDate: Date?
     @NSManaged public var latitude: Double
     @NSManaged public var longitude: Double
     @NSManaged public var title: String?
-    @NSManaged public var creationDate: Date?
-    @NSManaged public var pin: NSSet?
+    @NSManaged public var photos: NSSet?
 
 }
 
-// MARK: Generated accessors for pin
+// MARK: Generated accessors for photos
 extension Pin {
 
-    @objc(addPinObject:)
-    @NSManaged public func addToPin(_ value: Photo)
+    @objc(addPhotosObject:)
+    @NSManaged public func addToPhotos(_ value: Photo)
 
-    @objc(removePinObject:)
-    @NSManaged public func removeFromPin(_ value: Photo)
+    @objc(removePhotosObject:)
+    @NSManaged public func removeFromPhotos(_ value: Photo)
 
-    @objc(addPin:)
-    @NSManaged public func addToPin(_ values: NSSet)
+    @objc(addPhotos:)
+    @NSManaged public func addToPhotos(_ values: NSSet)
 
-    @objc(removePin:)
-    @NSManaged public func removeFromPin(_ values: NSSet)
+    @objc(removePhotos:)
+    @NSManaged public func removeFromPhotos(_ values: NSSet)
 
 }
 
